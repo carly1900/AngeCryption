@@ -3,12 +3,14 @@
 #include <stdbool.h>
 #include <string.h>
 
-bool validArguments(int argc, char* argv[], char* errorLog);
+char* concat(char* first, char* second);
+
+bool validArguments(int argc, char* argv[], char** errorLog);
 
 int main(int argc, char* argv[]) {
-  char* errorLog;
+  char* errorLog = "";
   
-  if(!validArguments(argc, argv, errorLog)) {
+  if(!validArguments(argc, argv, &errorLog)) {
     printf("Error:%s", errorLog);
     free(errorLog);
     return -1;
@@ -19,10 +21,9 @@ int main(int argc, char* argv[]) {
   return 0;
 }
 
-bool validArguments(int argc, char* argv[], char* errorLog) {
+bool validArguments(int argc, char* argv[], char** errorLog) {
   // arguments expected are :
   // [--encrypt:--decrypt] [file input] [optional output file]
-  errorLog = "";
   
   // validation of [--encrypt:--decrypt]
   // until proof of contrary
@@ -39,20 +40,19 @@ bool validArguments(int argc, char* argv[], char* errorLog) {
   }
   
   if(!validEncryptionState || hasContradiction) {
-    char* newError = "\nEncrpytion or decryption mode must be specified using --encrypt or --decrypt.";
-    size_t newErrorLength = strlen(newError), errorLogLength = strlen(errorLog);
-    size_t errorLogCpyLength;
-    char* errorLogCpy = (char*) malloc(errorLogLength + 1);
-    memcpy(errorLogCpy, errorLog, errorLogLength + 1);
-    errorLogCpyLength = strlen(errorLogCpy);
-    
-    errorLog = (char*) malloc(newErrorLength + errorLogCpyLength + 1);
-    memcpy(errorLog, errorLogCpy, errorLogCpyLength);
-    memcpy(errorLog + errorLogCpyLength, newError, newErrorLength + 1);
-
-    free(errorLogCpy);
+    *errorLog = concat(*errorLog, "\nEncrpytion or decryption mode must be specified using --encrypt or (exclusive) --decrypt.");
   }
-
+  
   // if no error message was printed, the arguments are valid
-  return strcmp(errorLog, "") == 0;
+  return strlen(*errorLog) == 0;
+}
+
+char* concat(char* first, char* second) {
+  size_t firstLength = strlen(first), secondLength = strlen(second);
+  char* concatenated = (char*) malloc(firstLength + secondLength + 1);
+
+  memcpy(concatenated, first, firstLength);
+  memcpy(concatenated + firstLength, second, secondLength + 1);
+  
+  return concatenated;
 }
