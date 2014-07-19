@@ -42,6 +42,12 @@ bool validArguments(int argc, char* argv[], char** errorLog) {
   if(!validEncryptionState || hasContradiction) {
     *errorLog = concat(*errorLog, "\nEncrpytion or decryption mode must be specified using --encrypt or (exclusive) --decrypt.");
   }
+
+  // validation of [file input]
+  if(argc < 3 || strcmp(argv[2], "--encrypt") == 0 || strcmp(argv[2], "--decrypt") == 0) {
+    // TODO regex? identifier -i -o?
+    *errorLog = concat(*errorLog, "\nNo output file name was detected arguments must be: [--encrypt:--decrypt] [file input] [optional output file].");
+  }
   
   // if no error message was printed, the arguments are valid
   return strlen(*errorLog) == 0;
