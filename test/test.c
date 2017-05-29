@@ -26,8 +26,16 @@ void test_reverse_iv() {
   assert(strcmp(test_cipher, cipher) == 0);
 }
 
+void test_integrate() {
+  long long iv[2];
+  assert(angecrypt("test/cat2.jpg", "test/cat.jpg", "qualitykey123456", "test/out.jpg", (char*) &iv) == 0);
+  assert(iv[1] == 0x4bbc368e2ad80fb6);
+  assert(iv[0] == 0x2d761769191dbb1c);
+}
+
 int main(int argc, char* argv[]) {
   test_reverse_iv();
+  test_integrate();
 
   return 0;
 }
