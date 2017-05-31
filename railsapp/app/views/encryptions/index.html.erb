@@ -1,0 +1,27 @@
+<%= link_to "New Encryption", new_encryption_path, class: "btn btn-primary" %>
+<br />
+<br />
+
+<table class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th>Plaintext source image</th>
+      <th>Fake target image</th>
+      <th>Encryption result</th>
+      <th>iv</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @encryptions.each do |encryption| %>
+      <tr>
+        <td><%= image_tag(encryption.source.url) %></td>
+	<td><%= image_tag(encryption.fake.url) %></td>
+	<td><%= image_tag(encryption.encrypted.url) %></td>
+        <td><%= encryption.iv %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<h3>To decrypt</h3>
+<p>openssl aes-128-cbc -d -K $(echo -n {ascii 16 bytes key} | xxd -pu) -iv {16 bytes hexadecimal iv} -in filein.jpg -out fileout.jpg</p>

@@ -1,0 +1,23 @@
+<% if !@encryption.errors.empty? %>
+  <div class="alert alert-error">
+    <ul>
+      <% @encryption.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div>
+  <%= form_for @encryption, html: { multipart: true } do |f| %>
+    <%= f.label :source %>
+    <%= f.file_field :source, required: true %>
+    <%= f.label :fake %>
+    <%= f.file_field :fake, required: true %>
+    <%= f.label :password %>
+    <br />
+    <%= text_field_tag :password, nil, {:required => true, :minlength => 16, :maxlength => 16} %>
+    <br />
+    <%= f.submit "Save", class: "btn btn-primary" %>
+  <% end %>
+</div>
